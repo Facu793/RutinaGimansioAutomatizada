@@ -1,0 +1,24 @@
+package com.gestionrutina.rutina.repository;
+
+import com.gestionrutina.rutina.entity.Rutina;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface RutinaRepository extends JpaRepository<Rutina, Long> {
+
+    List<Rutina> findByAlumnoIdAndActivaTrueOrderByFechaInicioDescIdDesc(Long alumnoId);
+
+    List<Rutina> findByAlumnoIdOrderByFechaInicioDescIdDesc(Long alumnoId);
+
+    @Query("""
+            SELECT r
+            FROM Rutina r
+            JOIN FETCH r.alumno
+            WHERE r.id = :id
+            """)
+    Optional<Rutina> buscarConAlumno(@Param("id") Long id);
+}
