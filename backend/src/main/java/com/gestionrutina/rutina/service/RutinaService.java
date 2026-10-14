@@ -276,10 +276,6 @@ public class RutinaService {
         List<String> advertencias = new ArrayList<>();
         for (ModuloRutina modulo : rutina.getModulos()) {
             for (EjercicioRutina linea : modulo.getEjercicios()) {
-                if (linea.getPorcentajeRm() != null && linea.getPesoCalculado() == null) {
-                    advertencias.add(modulo.getNombre() + " - " + linea.getEjercicio().getNombre()
-                            + ": no hay un 1RM registrado, el peso no se pudo calcular");
-                }
                 if (!linea.getEjercicio().isActivo()) {
                     advertencias.add(modulo.getNombre() + " - " + linea.getEjercicio().getNombre()
                             + ": el ejercicio está desactivado en el catálogo");

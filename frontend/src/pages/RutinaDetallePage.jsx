@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { api, descargar } from '../api/client'
 import { Aviso, Confirmacion } from '../components/ui'
 import { fechaLocal, textoTiempo } from '../utils/formato'
+import { enlaceWhatsapp, mensajeRutina } from '../utils/whatsapp'
 
 function textoEjercicio(ejercicio) {
   if (ejercicio.modalidad === 'REPETICIONES') {
@@ -24,20 +25,56 @@ export default function RutinaDetallePage() {
   const [error, setError] = useState('')
   const [confirmar, setConfirmar] = useState(false)
   const [bajando, setBajando] = useState(false)
+  const [telefono, setTelefono] = useState('')
+  const [aviso, setAviso] = useState('')
 
   useEffect(() => {
-    api(`/api/rutinas/${id}`).then(setRutina).catch((exception) => setError(exception.message))
+    let activo = true
+    api(`/api/rutinas/${id}`)
+      .then((datos) => {
+        if (!activo) return null
+        setRutina(datos)
+        return api(`/api/alumnos/${datos.alumnoId}`)
+      })
+      .then((alumno) => {
+        if (activo && alumno) setTelefono(alumno.telefono || '')
+      })
+      .catch((exception) => {
+        if (activo) setError(exception.message)
+      })
+    return () => { activo = false }
   }, [id])
 
   async function bajarPdf() {
     setBajando(true)
     setError('')
+    setAviso('')
     try {
       await descargar(`/api/rutinas/${id}/pdf`)
+      return true
     } catch (exception) {
       setError(exception.message)
+      return false
     } finally {
       setBajando(false)
+    }
+  }
+
+  async function enviarWhatsapp() {
+    const url = enlaceWhatsapp(telefono, mensajeRutina({
+      ...rutina,
+      fechaInicio: fechaLocal(rutina.fechaInicio),
+      fechaFin: fechaLocal(rutina.fechaFin),
+    }))
+    if (!url) {
+      setError('Cargá un teléfono de WhatsApp en la ficha del alumno.')
+      return
+    }
+    setError('')
+    window.open(url, '_blank', 'noopener,noreferrer')
+    const listo = await bajarPdf()
+    if (listo) {
+      setAviso('Se abrió WhatsApp y se descargó el PDF. Adjuntalo en el chat: desde el navegador no se puede enviar el archivo solo.')
     }
   }
 
@@ -59,7 +96,7 @@ export default function RutinaDetallePage() {
     <section>
       <p className="eyebrow">Rutina</p>
       <h1>{rutina.nombre}</h1>
-      <Aviso>{location.state?.mensaje}</Aviso>
+      <Aviso>{aviso || location.state?.mensaje}</Aviso>
       <Aviso tipo="error">{error}</Aviso>
       {rutina.advertencias?.length ? rutina.advertencias.map((texto) => <Aviso key={texto} tipo="error">{texto}</Aviso>) : null}
       <article className="card ficha">
@@ -92,6 +129,9 @@ export default function RutinaDetallePage() {
       <div className="acciones">
         <button type="button" className="btn btn-primary" onClick={bajarPdf} disabled={bajando}>
           {bajando ? 'Preparando PDF...' : 'Descargar PDF'}
+        </button>
+        <button type="button" className="btn btn-primary" onClick={enviarWhatsapp} disabled={bajando}>
+          Enviar por WhatsApp
         </button>
         <Link className="btn btn-ghost" to={`/rutinas/${rutina.id}/editar`}>Editar</Link>
         <Link className="btn btn-ghost" to={`/rutinas/nueva?desde=${rutina.id}`}>Duplicar</Link>

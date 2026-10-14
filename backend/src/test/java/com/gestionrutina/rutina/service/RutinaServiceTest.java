@@ -77,7 +77,7 @@ class RutinaServiceTest {
     }
 
     @Test
-    void advierteCuandoNoHayRmYConservaElPorcentaje() {
+    void guardaElPorcentajeAunqueNoHayaRm() {
         prepararAlumnoYEjercicio(null);
         when(rutinaRepository.save(any(Rutina.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -85,7 +85,7 @@ class RutinaServiceTest {
 
         assertEquals(new BigDecimal("80.0"), respuesta.modulos().getFirst().ejercicios().getFirst().porcentajeRm());
         assertNull(respuesta.modulos().getFirst().ejercicios().getFirst().pesoCalculado());
-        assertEquals(1, respuesta.advertencias().size());
+        assertTrue(respuesta.advertencias().isEmpty());
     }
 
     @Test

@@ -30,16 +30,36 @@ a { color: inherit; }
   background: var(--black);
   z-index: 5;
 }
-.barra-marca { display: flex; align-items: center; gap: 10px; }
-.logo {
-  width: 36px;
-  height: 36px;
-  display: grid;
-  place-items: center;
-  background: var(--green);
-  color: var(--black);
-  font-weight: 800;
-  border-radius: 10px;
+.marca {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  white-space: nowrap;
+}
+.marca-nombre {
+  font-family: Impact, "Arial Black", sans-serif;
+  font-style: italic;
+  font-size: 1.85rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.marca-nombre span:first-child {
+  color: var(--white);
+  text-shadow: 1px 1px 0 #111, -1px -1px 0 rgba(255, 255, 255, 0.35);
+}
+.marca-nombre span:last-child {
+  color: var(--green);
+  text-shadow: 1px 1px 0 #111, -1px -1px 0 rgba(200, 255, 0, 0.45);
+}
+.marca-detalle {
+  color: var(--white);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 0.925rem;
+  letter-spacing: 0;
+  line-height: 1;
 }
 .nav { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .nav a { text-decoration: none; padding: 8px 10px; border-radius: 999px; color: var(--white); }

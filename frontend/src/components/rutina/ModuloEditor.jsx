@@ -37,7 +37,7 @@ function LineaEjercicio({ linea, alumnoId, onChange, onQuitar, onSubir, onBajar 
           body: JSON.stringify({ ejercicioId: linea.ejercicioId, porcentaje: Number(linea.porcentajeRm) }),
         })
         if (!cancelado) {
-          setCalculo({ peso: resultado.pesoCalculado, advertencia: resultado.advertencia || '' })
+          setCalculo({ peso: resultado.pesoCalculado ?? null, advertencia: '' })
         }
       } catch (exception) {
         if (!cancelado) {
@@ -72,7 +72,7 @@ function LineaEjercicio({ linea, alumnoId, onChange, onQuitar, onSubir, onBajar 
           <Campo label="Repeticiones">
             <input type="number" min="1" value={linea.repeticiones} onChange={(event) => onChange({ ...linea, repeticiones: Number(event.target.value) })} />
           </Campo>
-          <Campo label="% del 1RM">
+          <Campo label="% de fuerza">
             <input type="number" min="1" max="100" step="0.5" value={linea.porcentajeRm} placeholder="Opcional" onChange={(event) => onChange({ ...linea, porcentajeRm: event.target.value })} />
           </Campo>
           {calculo.advertencia ? <p className="aviso aviso-error">{calculo.advertencia}</p> : null}

@@ -100,7 +100,7 @@ class AlumnoEjercicioRmServiceTest {
     }
 
     @Test
-    void calcularAdvierteSiNoHayRm() {
+    void calcularSinRmDejaElPesoVacio() {
         when(alumnoRepository.findById(3L)).thenReturn(Optional.of(alumno()));
         when(ejercicioRepository.findById(5L)).thenReturn(Optional.of(ejercicio(true)));
         when(rmRepository.findByAlumnoIdAndEjercicioId(3L, 5L)).thenReturn(Optional.empty());
@@ -108,7 +108,7 @@ class AlumnoEjercicioRmServiceTest {
         CalculoRmResponse calculo = rmService.calcular(3L, new CalculoRmRequest(5L, new BigDecimal("80")));
 
         assertNull(calculo.pesoCalculado());
-        assertEquals(AlumnoEjercicioRmService.SIN_RM, calculo.advertencia());
+        assertNull(calculo.advertencia());
         ArgumentCaptor<Long> alumnoId = ArgumentCaptor.forClass(Long.class);
         verify(alumnoRepository).findById(alumnoId.capture());
         assertEquals(3L, alumnoId.getValue());

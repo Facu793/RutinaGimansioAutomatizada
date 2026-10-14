@@ -23,10 +23,10 @@ export default function Layout() {
   return (
     <div className="app">
       <header className="barra">
-        <div className="barra-marca">
-          <span className="logo">GR</span>
-          <strong>Gestión de rutinas</strong>
-        </div>
+        <p className="marca" aria-label="PowerFit, gestión de rutinas">
+          <span className="marca-nombre"><span>POWER</span><span>FIT</span></span>
+          <span className="marca-detalle">gestión de rutinas</span>
+        </p>
         <button type="button" className="menu-boton" onClick={() => setMenuAbierto((valor) => !valor)} aria-expanded={menuAbierto}>
           Menú
         </button>

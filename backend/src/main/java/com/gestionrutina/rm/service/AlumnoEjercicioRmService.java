@@ -87,7 +87,7 @@ public class AlumnoEjercicioRmService {
                     request.porcentaje(),
                     null,
                     null,
-                    SIN_RM
+                    null
             );
         }
 
